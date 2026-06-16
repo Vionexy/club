@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Детали турнира</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <button class="header__back" onclick="window.history.back()">←</button>
+      <h1 class="header__title" id="nav-title">Турнир</h1>
+      <div style="width:36px"></div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container page animate-fade-in" style="padding-bottom:100px">
+    <div id="tournament-detail" class="hidden">
+      <!-- Tournament Header Card -->
+      <div class="card mb-lg card--active">
+        <div class="flex justify-between items-center mb-md">
+          <h2 id="t-title" class="font-display" style="font-size:var(--text-xl)">—</h2>
+          <div id="t-status"></div>
+        </div>
+        <p id="t-desc" class="text-muted mb-lg">—</p>
+        
+        <div class="flex gap-sm mb-md flex-wrap">
+          <span id="t-mode" class="badge badge--mode">—</span>
+          <span id="t-type" class="badge badge--mode">—</span>
+          <span id="t-participants-badge" class="badge badge--mode">👥 — / —</span>
+        </div>
+      </div>
+
+      <!-- Action Button (Register / Bracket) -->
+      <div class="mb-lg">
+        <button id="register-btn" class="btn btn--primary btn--full btn--lg mb-sm hidden">Зарегистрироваться</button>
+        <button id="unregister-btn" class="btn btn--secondary btn--full btn--lg mb-sm hidden">Отменить регистрацию</button>
+        <button id="view-bracket-btn" class="btn btn--primary btn--full btn--lg mb-sm hidden">🏆 Посмотреть сетку</button>
+      </div>
+
+      <!-- Prizes -->
+      <div class="detail-section">
+        <h3 class="detail-section__title">🎁 Призы</h3>
+        <div class="prizes">
+          <div class="prize-item prize-item--gold">
+            <div class="prize-item__medal">🥇</div>
+            <div>
+              <div class="prize-item__place">1 Место</div>
+              <div id="prize-1" class="prize-item__value">Не указан</div>
+            </div>
+          </div>
+          <div class="prize-item prize-item--silver">
+            <div class="prize-item__medal">🥈</div>
+            <div>
+              <div class="prize-item__place">2 Место</div>
+              <div id="prize-2" class="prize-item__value">Не указан</div>
+            </div>
+          </div>
+          <div class="prize-item prize-item--bronze">
+            <div class="prize-item__medal">🥉</div>
+            <div>
+              <div class="prize-item__place">3 Место</div>
+              <div id="prize-3" class="prize-item__value">Не указан</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Details -->
+      <div class="detail-section">
+        <h3 class="detail-section__title">ℹ️ Информация</h3>
+        <div class="card">
+          <div class="detail-row">
+            <span class="detail-row__label">Начало турнира</span>
+            <span id="t-start-date" class="detail-row__value">—</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-row__label">Конец регистрации</span>
+            <span id="t-deadline" class="detail-row__value">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Participants List -->
+      <div class="detail-section">
+        <h3 class="detail-section__title">👥 Участники</h3>
+        <div id="participants-list" class="participants-list">
+          <p class="text-center text-muted py-md">Нет участников.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Container -->
+    <div id="loading-container">
+      <div class="card mb-lg">
+        <div class="skeleton skeleton--title"></div>
+        <div class="skeleton skeleton--text"></div>
+        <div class="skeleton skeleton--text" style="width:60%"></div>
+      </div>
+      <div class="skeleton skeleton--card" style="height:80px"></div>
+    </div>
+  </main>
+
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- App JS -->
+  <script src="js/telegram.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      App.init({ page: 'tournament', showBack: true, backUrl: 'index.html' });
+
+      const tId = App.getParam('id');
+      if (!tId) {
+        App.navigate('index.html');
+        return;
+      }
+
+      const detailEl = document.getElementById('tournament-detail');
+      const loadingEl = document.getElementById('loading-container');
+      const registerBtn = document.getElementById('register-btn');
+      const unregisterBtn = document.getElementById('unregister-btn');
+      const viewBracketBtn = document.getElementById('view-bracket-btn');
+
+      let tournament = null;
+      let currentUser = null;
+
+      const loadTournament = async () => {
+        try {
+          // Fetch user profile first (to check brawl stars tag)
+          currentUser = await API.getMe();
+          
+          // Fetch tournament details
+          tournament = await API.getTournament(tId);
+          
+          // Update details
+          document.getElementById('t-title').textContent = tournament.title;
+          document.getElementById('t-desc').textContent = tournament.description || 'Описание отсутствует.';
+          document.getElementById('t-status').innerHTML = App.statusBadge(tournament.status);
+          document.getElementById('t-mode').textContent = tournament.game_mode;
+          document.getElementById('t-type').textContent = tournament.tournament_type;
+          document.getElementById('t-participants-badge').textContent = `👥 ${tournament.participant_count} / ${tournament.max_participants}`;
+          
+          document.getElementById('prize-1').textContent = tournament.prize_1st || 'Не указан';
+          document.getElementById('prize-2').textContent = tournament.prize_2nd || 'Не указан';
+          document.getElementById('prize-3').textContent = tournament.prize_3rd || 'Не указан';
+          
+          document.getElementById('t-start-date').textContent = App.formatDateTime(tournament.start_date);
+          document.getElementById('t-deadline').textContent = App.formatDateTime(tournament.registration_deadline);
+
+          // Buttons visibility
+          registerBtn.classList.add('hidden');
+          unregisterBtn.classList.add('hidden');
+          viewBracketBtn.classList.add('hidden');
+
+          if (tournament.status === 'completed' || tournament.status === 'active') {
+            viewBracketBtn.classList.remove('hidden');
+          } else if (tournament.status === 'registration' || tournament.status === 'draft') {
+            if (tournament.is_registered) {
+              unregisterBtn.classList.remove('hidden');
+            } else {
+              registerBtn.classList.remove('hidden');
+            }
+          }
+
+          // Fetch bracket to load participants list (or we can construct participants list from matches)
+          const matches = await API.getBracket(tId);
+          const participantsContainer = document.getElementById('participants-list');
+          participantsContainer.innerHTML = '';
+
+          // Extract unique players from bracket matches or registrations
+          // Since our API currently does not have a direct registrations list for users,
+          // let's render players from the matches (which we can get from API), or fallback.
+          // Wait, if bracket is not generated yet, matches is empty. We can show list of players if we retrieve registrations.
+          // Let's check: registrations has users details? The endpoint /api/tournaments/{id} does not return registrations.
+          // But wait! We can extract unique players from bracket matches if generated.
+          // If not generated, let's display a simple message "Сетка еще не сформирована. Список участников будет доступен после начала."
+          if (matches && matches.length > 0) {
+            const playersMap = new Map();
+            matches.forEach(m => {
+              if (m.player1) playersMap.set(m.player1.id, m.player1);
+              if (m.player2) playersMap.set(m.player2.id, m.player2);
+            });
+
+            if (playersMap.size > 0) {
+              playersMap.forEach(player => {
+                const row = document.createElement('div');
+                row.className = 'participant-row';
+                row.innerHTML = `
+                  <div class="participant-row__avatar">${player.display_name[0].toUpperCase()}</div>
+                  <div class="participant-row__name">${App.escapeHtml(player.display_name)}</div>
+                  <div class="participant-row__tag">#${App.escapeHtml(player.brawl_stars_tag || '—')}</div>`;
+                participantsContainer.appendChild(row);
+              });
+            } else {
+              participantsContainer.innerHTML = '<p class="text-center text-muted">Нет игроков в сетке.</p>';
+            }
+          } else {
+            participantsContainer.innerHTML = `
+              <div class="text-center py-lg text-muted">
+                📌 Сетка еще не создана. Список участников обновится после начала турнира.
+              </div>`;
+          }
+
+          loadingEl.classList.add('hidden');
+          detailEl.classList.remove('hidden');
+        } catch (err) {
+          App.showError(loadingEl, err.message, loadTournament);
+        }
+      };
+
+      await loadTournament();
+
+      // Register Button handler
+      registerBtn.addEventListener('click', async () => {
+        TG.haptic('medium');
+        if (!currentUser.brawl_stars_tag) {
+          TG.alert('⚠️ Укажите ваш Brawl Stars Tag в профиле перед регистрацией на турнир!').then(() => {
+            App.navigate('profile.html');
+          });
+          return;
+        }
+
+        const confirmReg = await TG.confirm('Вы действительно хотите зарегистрироваться на этот турнир?');
+        if (!confirmReg) return;
+
+        try {
+          await API.register(tId);
+          App.toast('Вы успешно зарегистрировались!', 'success');
+          await loadTournament();
+        } catch (err) {
+          App.toast(err.message, 'error');
+        }
+      });
+
+      // Unregister Button handler
+      unregisterBtn.addEventListener('click', async () => {
+        TG.haptic('medium');
+        const confirmUnreg = await TG.confirm('Вы действительно хотите отменить регистрацию?');
+        if (!confirmUnreg) return;
+
+        try {
+          await API.unregister(tId);
+          App.toast('Регистрация отменена.', 'info');
+          await loadTournament();
+        } catch (err) {
+          App.toast(err.message, 'error');
+        }
+      });
+
+      // View Bracket Button handler
+      viewBracketBtn.addEventListener('click', () => {
+        App.navigate('bracket.html', { id: tId });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Турнирная сетка</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <button class="header__back" onclick="window.history.back()">←</button>
+      <h1 class="header__title" id="t-title">Сетка турнира</h1>
+      <div style="width:36px"></div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container page animate-fade-in" style="max-width:100%; padding-left:0; padding-right:0;">
+    <div class="px-lg" style="margin-bottom:var(--space-md)">
+      <div class="page-title" style="margin-bottom:0">
+        <span>📊</span> Турнирная сетка
+      </div>
+      <p class="text-muted text-sm mt-sm">Сдвигайте сетку вправо, чтобы увидеть следующие раунды.</p>
+    </div>
+
+    <!-- Bracket Display -->
+    <div id="bracket-container" class="bracket-container">
+      <!-- Generated bracket matches go here -->
+    </div>
+  </main>
+
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- App JS -->
+  <script src="js/telegram.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/bracket.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      App.init({ page: 'bracket', showBack: true });
+
+      const tId = App.getParam('id');
+      if (!tId) {
+        App.navigate('index.html');
+        return;
+      }
+
+      const bracketContainer = document.getElementById('bracket-container');
+      App.showSkeletons(bracketContainer, 2);
+
+      const loadBracket = async () => {
+        try {
+          // Fetch tournament details for title
+          const t = await API.getTournament(tId);
+          document.getElementById('t-title').textContent = t.title;
+
+          // Fetch matches
+          const matches = await API.getBracket(tId);
+          Bracket.render(bracketContainer, matches);
+        } catch (err) {
+          App.showError(bracketContainer, err.message, loadBracket);
+        }
+      };
+
+      await loadBracket();
+    });
+  </script>
+</body>
+</html>
