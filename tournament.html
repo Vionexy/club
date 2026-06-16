@@ -22,6 +22,7 @@
     <div id="tournament-detail" class="hidden">
       <!-- Tournament Header Card -->
       <div class="card mb-lg card--active">
+        <div id="t-banner-container"></div>
         <div class="flex justify-between items-center mb-md">
           <h2 id="t-title" class="font-display" style="font-size:var(--text-xl)">—</h2>
           <div id="t-status"></div>
@@ -139,6 +140,12 @@
           tournament = await API.getTournament(tId);
           
           // Update details
+          if (tournament.image_id) {
+            document.getElementById('t-banner-container').innerHTML = `
+              <img src="${API.BASE_URL}/tournaments/${tournament.id}/image" alt="banner" style="width:100%; height:160px; object-fit:cover; border-radius:var(--radius-md); margin-bottom:var(--space-md);">`;
+          } else {
+            document.getElementById('t-banner-container').innerHTML = '';
+          }
           document.getElementById('t-title').textContent = tournament.title;
           document.getElementById('t-desc').textContent = tournament.description || 'Описание отсутствует.';
           document.getElementById('t-status').innerHTML = App.statusBadge(tournament.status);
