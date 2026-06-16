@@ -1,1 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Панель управления</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
 
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <button class="header__back" onclick="App.navigate('../index.html')">←</button>
+      <h1 class="header__title">🔧 Админ-панель</h1>
+      <div style="width:36px"></div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container page animate-fade-in" style="padding-bottom:100px">
+    <div class="page-title">
+      <span>📊</span> Панель управления
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="admin-stats">
+      <div class="admin-stat-card">
+        <div id="stat-active-tournaments" class="admin-stat-card__value">—</div>
+        <div class="admin-stat-card__label">Активные турниры</div>
+      </div>
+      <div class="admin-stat-card">
+        <div id="stat-total-users" class="admin-stat-card__value">—</div>
+        <div class="admin-stat-card__label">Всего игроков</div>
+      </div>
+    </div>
+
+    <!-- Quick Action -->
+    <div class="mb-xl">
+      <button class="btn btn--primary btn--full btn--lg" onclick="App.navigate('create.html')">➕ Создать новый турнир</button>
+    </div>
+
+    <!-- Tournaments List -->
+    <div class="detail-section">
+      <h3 class="detail-section__title">🏆 Список турниров</h3>
+      <div id="admin-tournaments-list" class="stagger-children">
+        <!-- Tournaments list -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- App JS -->
+  <script src="../js/telegram.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/admin.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Modify base URL for admin requests relative path in js/api.js
+      API.BASE_URL = 'http://localhost:8000/api'; // Ensure it points to correct local port
+      App.init({ page: 'admin-dashboard', showBack: true, backUrl: '../index.html' });
+
+      // Run Admin Panel Initializer
+      Admin.initDashboard();
+    });
+  </script>
+</body>
+</html>

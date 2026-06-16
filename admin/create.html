@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Управление турниром</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <button class="header__back" onclick="App.navigate('index.html')">←</button>
+      <h1 class="header__title" id="form-page-title"><span>➕</span> Создать турнир</h1>
+      <div style="width:36px"></div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container page animate-fade-in" style="padding-bottom:100px">
+    
+    <div class="card">
+      <form id="tournament-form">
+        <!-- Title -->
+        <div class="form-group">
+          <label class="form-label" for="title">Название турнира</label>
+          <input type="text" id="title" class="form-input" placeholder="Турнир от Deadly Crew" required maxlength="255">
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label class="form-label" for="description">Описание</label>
+          <textarea id="description" class="form-textarea" placeholder="Данный турнир только для участников клуба..."></textarea>
+        </div>
+
+        <!-- Game Mode -->
+        <div class="form-group">
+          <label class="form-label" for="game_mode">Режим игры</label>
+          <select id="game_mode" class="form-select">
+            <option value="Gem Grab">Гем Граб (Gem Grab)</option>
+            <option value="Brawl Ball">Броулбол (Brawl Ball)</option>
+            <option value="Knockout">Нокаут (Knockout)</option>
+            <option value="Showdown">Столкновение (Showdown)</option>
+            <option value="Heist">Ограбление (Heist)</option>
+            <option value="Bounty">Награда за поимку (Bounty)</option>
+            <option value="Wipeout">Зачистка (Wipeout)</option>
+            <option value="Hot Zone">Горячая зона (Hot Zone)</option>
+          </select>
+        </div>
+
+        <!-- Tournament Type -->
+        <div class="form-group">
+          <label class="form-label" for="tournament_type">Тип турнира</label>
+          <select id="tournament_type" class="form-select">
+            <option value="1v1">Соло (1 на 1)</option>
+            <option value="2v2">Дуо (2 на 2)</option>
+            <option value="3v3">3 на 3</option>
+          </select>
+        </div>
+
+        <!-- Bracket Type -->
+        <div class="form-group">
+          <label class="form-label" for="bracket_type">Формат сетки</label>
+          <select id="bracket_type" class="form-select">
+            <option value="single_elimination">Single Elimination (на вылет)</option>
+          </select>
+        </div>
+
+        <!-- Max Participants -->
+        <div class="form-group">
+          <label class="form-label" for="max_participants">Макс. участников</label>
+          <input type="number" id="max_participants" class="form-input" value="16" min="2" max="256" required>
+        </div>
+
+        <!-- Start Date -->
+        <div class="form-group">
+          <label class="form-label" for="start_date">Дата и время начала</label>
+          <input type="datetime-local" id="start_date" class="form-input" required>
+        </div>
+
+        <!-- Registration Deadline -->
+        <div class="form-group">
+          <label class="form-label" for="registration_deadline">Дедлайн регистрации</label>
+          <input type="datetime-local" id="registration_deadline" class="form-input" required>
+        </div>
+
+        <!-- Prizes -->
+        <div class="divider"></div>
+        <h3 class="font-display mb-md" style="font-size:var(--text-md)">🎁 Призы</h3>
+
+        <div class="form-group">
+          <label class="form-label" for="prize_1st">1 Место</label>
+          <input type="text" id="prize_1st" class="form-input" placeholder="Например: 170 кристаллов / Роль Чемпиона">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="prize_2nd">2 Место</label>
+          <input type="text" id="prize_2nd" class="form-input" placeholder="Например: 80 кристаллов">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="prize_3rd">3 Место</label>
+          <input type="text" id="prize_3rd" class="form-input" placeholder="Например: 30 кристаллов">
+        </div>
+
+        <!-- Status -->
+        <div class="divider"></div>
+        <div class="form-group">
+          <label class="form-label" for="status">Статус турнира</label>
+          <select id="status" class="form-select">
+            <option value="draft">Черновик (Draft)</option>
+            <option value="registration">Регистрация открыта (Registration)</option>
+            <option value="active">Активный / В процессе (Active)</option>
+            <option value="completed">Завершен (Completed)</option>
+          </select>
+        </div>
+
+        <button type="submit" id="form-submit-btn" class="btn btn--primary btn--full btn--lg">Создать турнир</button>
+      </form>
+    </div>
+
+  </main>
+
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- App JS -->
+  <script src="../js/telegram.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/admin.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      API.BASE_URL = 'http://localhost:8000/api';
+      App.init({ page: 'admin-create', showBack: true, backUrl: 'index.html' });
+
+      // Run Admin Panel Form Initializer
+      Admin.initCreateForm();
+    });
+  </script>
+</body>
+</html>
