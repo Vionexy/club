@@ -175,42 +175,25 @@
             }
           }
 
-          // Fetch bracket to load participants list (or we can construct participants list from matches)
-          const matches = await API.getBracket(tId);
+          // Fetch actual registered participants list
+          const participants = await API.getParticipants(tId);
           const participantsContainer = document.getElementById('participants-list');
           participantsContainer.innerHTML = '';
 
-          // Extract unique players from bracket matches or registrations
-          // Since our API currently does not have a direct registrations list for users,
-          // let's render players from the matches (which we can get from API), or fallback.
-          // Wait, if bracket is not generated yet, matches is empty. We can show list of players if we retrieve registrations.
-          // Let's check: registrations has users details? The endpoint /api/tournaments/{id} does not return registrations.
-          // But wait! We can extract unique players from bracket matches if generated.
-          // If not generated, let's display a simple message "Сетка еще не сформирована. Список участников будет доступен после начала."
-          if (matches && matches.length > 0) {
-            const playersMap = new Map();
-            matches.forEach(m => {
-              if (m.player1) playersMap.set(m.player1.id, m.player1);
-              if (m.player2) playersMap.set(m.player2.id, m.player2);
+          if (participants && participants.length > 0) {
+            participants.forEach(player => {
+              const row = document.createElement('div');
+              row.className = 'participant-row';
+              row.innerHTML = `
+                <div class="participant-row__avatar">${player.display_name[0].toUpperCase()}</div>
+                <div class="participant-row__name">${App.escapeHtml(player.display_name)}</div>
+                <div class="participant-row__tag">#${App.escapeHtml(player.brawl_stars_tag || '—')}</div>`;
+              participantsContainer.appendChild(row);
             });
-
-            if (playersMap.size > 0) {
-              playersMap.forEach(player => {
-                const row = document.createElement('div');
-                row.className = 'participant-row';
-                row.innerHTML = `
-                  <div class="participant-row__avatar">${player.display_name[0].toUpperCase()}</div>
-                  <div class="participant-row__name">${App.escapeHtml(player.display_name)}</div>
-                  <div class="participant-row__tag">#${App.escapeHtml(player.brawl_stars_tag || '—')}</div>`;
-                participantsContainer.appendChild(row);
-              });
-            } else {
-              participantsContainer.innerHTML = '<p class="text-center text-muted">Нет игроков в сетке.</p>';
-            }
           } else {
             participantsContainer.innerHTML = `
               <div class="text-center py-lg text-muted">
-                📌 Сетка еще не создана. Список участников обновится после начала турнира.
+                📌 Участников пока нет. Зарегистрируйтесь первым!
               </div>`;
           }
 

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Сетки — Deadly Crew</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .bracket-tour-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-md);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-md);
+      transition: all var(--transition-normal);
+      cursor: pointer;
+    }
+    .bracket-tour-item:hover {
+      border-color: var(--accent-cyan);
+      transform: translateX(4px);
+    }
+    .bracket-tour-icon {
+      font-size: 1.8rem;
+      margin-right: var(--space-md);
+    }
+    .bracket-tour-details {
+      flex: 1;
+    }
+    .bracket-tour-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    .bracket-tour-meta {
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <button class="header__back" onclick="window.history.back()">←</button>
+      <h1 class="header__title">📊 Сетки праков</h1>
+      <div style="width:36px"></div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container page animate-fade-in" style="padding-bottom:100px">
+    
+    <div class="page-title">
+      <span>📊</span> Активные и прошедшие сетки
+    </div>
+    
+    <p class="text-muted text-sm mb-lg">Выберите турнир или прак ниже, чтобы открыть интерактивную сетку матчей.</p>
+
+    <!-- Brackets List -->
+    <div id="brackets-list" class="stagger-children">
+      <!-- Loading skeletons or items will go here -->
+    </div>
+
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav__inner">
+      <a href="index.html" class="bottom-nav__item" data-nav="home">
+        <svg viewBox="0 0 24 24">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+        <span>Главная</span>
+      </a>
+      <a href="schedule.html" class="bottom-nav__item" data-nav="schedule">
+        <svg viewBox="0 0 24 24">
+          <path d="M19 5h-2V3c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H5c-1.1 0-2 .9-2 2v13c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-6-2h2v2h-2V3zm-4 0h2v2H9V3zm10 17H5V7h14v13z"/>
+        </svg>
+        <span>Расписание</span>
+      </a>
+      <a href="leaderboard.html" class="bottom-nav__item" data-nav="leaderboard">
+        <svg viewBox="0 0 24 24">
+          <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+        </svg>
+        <span>Лидеры</span>
+      </a>
+      <a href="profile.html" class="bottom-nav__item" data-nav="profile">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+        </svg>
+        <span>Профиль</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- App JS -->
+  <script src="js/telegram.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      App.init({ page: 'brackets-list', showBack: true, backUrl: 'index.html' });
+
+      const listContainer = document.getElementById('brackets-list');
+      App.showSkeletons(listContainer, 3);
+
+      const loadBrackets = async () => {
+        try {
+          const tournaments = await API.getTournaments();
+          listContainer.innerHTML = '';
+
+          // Brackets are generated for tournaments with status: 'active' or 'completed'
+          const bracketTours = tournaments.filter(t => t.status === 'active' || t.status === 'completed');
+
+          if (bracketTours.length === 0) {
+            App.showEmpty(
+              listContainer,
+              '📊',
+              'Сетки отсутствуют',
+              'Пока нет запущенных турниров с сетками. Они появятся после начала игр!'
+            );
+            return;
+          }
+
+          bracketTours.forEach(t => {
+            const item = document.createElement('div');
+            item.className = 'bracket-tour-item animate-slide-up';
+            item.addEventListener('click', () => {
+              App.navigate('bracket.html', { id: t.id });
+            });
+
+            item.innerHTML = `
+              <div class="bracket-tour-icon">📊</div>
+              <div class="bracket-tour-details">
+                <div class="bracket-tour-title">${App.escapeHtml(t.title)}</div>
+                <div class="bracket-tour-meta">
+                  <span>🎮 ${App.escapeHtml(t.game_mode)}</span> • 
+                  <span>👥 ${t.participant_count} участников</span>
+                </div>
+              </div>
+              ${App.statusBadge(t.status)}`;
+            listContainer.appendChild(item);
+          });
+        } catch (err) {
+          App.showError(listContainer, err.message, loadBrackets);
+        }
+      };
+
+      await loadBrackets();
+    });
+  </script>
+</body>
+</html>
