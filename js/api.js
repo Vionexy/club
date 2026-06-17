@@ -116,6 +116,11 @@ const API = {
     return this.delete(`/tournaments/${tournamentId}/register`);
   },
 
+  /** Get registered participants for a tournament */
+  getParticipants(tournamentId) {
+    return this.get(`/tournaments/${tournamentId}/participants`);
+  },
+
   // ============ BRACKETS ============
 
   /** Get tournament bracket */
@@ -187,6 +192,11 @@ const API = {
   /** Check if current user is admin */
   checkAdmin() {
     return this.get('/admin/check');
+  },
+
+  /** Get config value by key */
+  getConfig(key) {
+    return this.get(`/config/${key}`);
   }
 };
 
