@@ -1,10 +1,17 @@
+
+@font-face {
+  font-family: 'Nougat';
+  src: url('fonts/Nougat.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
 /* ============================================
    BRAWL STARS TOURNAMENT - DESIGN SYSTEM
    ============================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Inter:wght@400;500;600;700&display=swap');
-@import url('https://cdn.supercell.com/fonts/supercell/fonts_supercellheadline.css');
-@import url('https://cdn.supercell.com/fonts/supercell/fonts_supercelltext_full.css');
+
+
 
 /* --- CSS Variables --- */
 :root {
@@ -43,8 +50,8 @@
   --gradient-bronze: linear-gradient(135deg, #CD7F32, #B8860B);
 
   /* Typography */
-  --font-display: 'SupercellHeadline-Heavy', 'Lilita One', cursive;
-  --font-body: 'SupercellText-Regular', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Nougat', 'Lilita One', cursive;
+  --font-body: 'Nougat', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -1641,8 +1648,8 @@ input, select, textarea, button {
   --radius-md: 4px;
   --radius-lg: 8px;
   --radius-xl: 12px;
-  --font-body: \'SupercellHeadline-Heavy\', \'SupercellText-Regular\', cursive;
-  --font-display: \'SupercellHeadline-Heavy\', cursive;
+  --font-body: \'Nougat\', \'Nougat\', cursive;
+  --font-display: \'Nougat\', cursive;
 }
 
 body {
