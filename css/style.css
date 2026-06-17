@@ -1613,3 +1613,170 @@ input, select, textarea, button {
   box-shadow: 0 0 15px var(--accent-gold-glow);
 }
 
+
+
+/* ============================================
+   SUPERCELL BRAWL STARS THEME OVERRIDE
+   ============================================ */
+:root {
+  --bg-primary: #050A1F;
+  --bg-secondary: #0A143D;
+  --bg-card: #14287A;
+  --bg-card-hover: #1C3AA8;
+  --border-default: #000000;
+  --border-hover: #000000;
+  --accent-orange: #FFD200;
+  --accent-gold: #FFD200;
+  --accent-cyan: #00F0FF;
+  --accent-purple: #D500FF;
+  --accent-green: #39FF14;
+  --accent-red: #FF003C;
+  --shadow-sm: 2px 2px 0px #000;
+  --shadow-md: 4px 4px 0px #000;
+  --shadow-lg: 6px 6px 0px #000;
+  --radius-sm: 0px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --font-body: \'Lilita One\', cursive;
+}
+
+body {
+  background-color: var(--bg-primary);
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(213, 0, 255, 0.15), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(0, 240, 255, 0.15), transparent 25%);
+  background-attachment: fixed;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+body::before {
+  display: none;
+}
+
+/* Chunky Cards */
+.card, .dashboard-card, .tournament-card {
+  border: 3px solid #000 !important;
+  box-shadow: 4px 4px 0px #000 !important;
+  transform: skewX(-4deg);
+  border-radius: var(--radius-md) !important;
+  background: var(--bg-card);
+  transition: all 0.2s ease !important;
+  margin-bottom: var(--space-xl);
+}
+
+.card > *, .dashboard-card > *, .tournament-card > * {
+  transform: skewX(4deg);
+}
+
+.card:hover, .dashboard-card:hover, .tournament-card:hover {
+  transform: skewX(-4deg) translateY(-4px) !important;
+  box-shadow: 6px 6px 0px #000 !important;
+  background: var(--bg-card-hover) !important;
+  border-color: #000 !important;
+}
+
+/* Card Colors Overrides */
+.dashboard-card--orange { background: linear-gradient(135deg, #FF9900, #FFD200) !important; color: #000 !important; }
+.dashboard-card--orange .dashboard-card__desc { color: #222 !important; }
+.dashboard-card--cyan { background: linear-gradient(135deg, #00B4FF, #00F0FF) !important; color: #000 !important; }
+.dashboard-card--cyan .dashboard-card__desc { color: #222 !important; }
+.dashboard-card--purple { background: linear-gradient(135deg, #9D00FF, #D500FF) !important; color: #fff !important; }
+.dashboard-card--purple .dashboard-card__desc { color: #eee !important; }
+.dashboard-card--gold { background: linear-gradient(135deg, #FF003C, #FF4B72) !important; color: #fff !important; }
+.dashboard-card--gold .dashboard-card__desc { color: #eee !important; }
+
+/* Text Borders/Stroke for Titles */
+h1, h2, h3, .header__title, .page-title, .dashboard-card__title {
+  color: #fff;
+  text-shadow: 
+    2px 2px 0 #000, 
+    -1px -1px 0 #000, 
+    1px -1px 0 #000, 
+    -1px 1px 0 #000, 
+    1px 1px 0 #000;
+}
+
+/* Headers */
+.header {
+  background: #000C28 !important;
+  border-bottom: 3px solid #000 !important;
+  box-shadow: 0 4px 0px #000 !important;
+}
+
+.header__back {
+  border: 3px solid #000 !important;
+  box-shadow: 2px 2px 0 #000 !important;
+  border-radius: 4px !important;
+  background: var(--accent-orange) !important;
+  color: #000 !important;
+  transform: skewX(-4deg);
+}
+
+/* Buttons */
+.btn {
+  border: 3px solid #000 !important;
+  box-shadow: 4px 4px 0px #000 !important;
+  transform: skewX(-4deg);
+  border-radius: var(--radius-md) !important;
+  text-transform: uppercase;
+  font-family: var(--font-display) !important;
+  font-size: 1.1rem !important;
+  transition: all 0.1s ease !important;
+}
+
+.btn > * {
+  transform: skewX(4deg);
+}
+
+.btn:active {
+  transform: skewX(-4deg) translateY(4px) !important;
+  box-shadow: 0px 0px 0px #000 !important;
+}
+
+.btn--primary {
+  background: var(--accent-orange) !important;
+  color: #000 !important;
+}
+
+/* Badges */
+.badge {
+  border: 2px solid #000 !important;
+  box-shadow: 2px 2px 0px #000 !important;
+  border-radius: 4px !important;
+  transform: skewX(-4deg);
+  font-family: var(--font-display) !important;
+}
+
+/* Bottom Nav */
+.bottom-nav {
+  background: #000C28 !important;
+  border-top: 3px solid #000 !important;
+  box-shadow: 0 -4px 0px #000 !important;
+  padding-bottom: env(safe-area-inset-bottom, 10px);
+}
+
+.bottom-nav__item {
+  color: #888 !important;
+}
+
+.bottom-nav__item--active {
+  color: var(--accent-cyan) !important;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.bottom-nav__item--active svg {
+  filter: drop-shadow(2px 2px 0px #000);
+}
+
+/* Inputs / Form controls */
+.form-control, .input-field {
+  border: 3px solid #000 !important;
+  border-radius: 4px !important;
+  box-shadow: inset 2px 2px 0 rgba(0,0,0,0.2) !important;
+  font-family: var(--font-body) !important;
+  background: #fff !important;
+  color: #000 !important;
+}
+
